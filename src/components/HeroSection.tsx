@@ -43,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="flex items-center gap-2 rounded-lg bg-teal-500 px-5 py-2.5 text-xs font-semibold text-slate-950 hover:bg-teal-400 transition-colors shadow-sm shadow-teal-500/20"
             >
               <BookOpen className="h-4 w-4" />
-              <span>Browse 16+ Clinical Myths</span>
+              <span>Browse 50+ Clinical Myths</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
 
@@ -68,7 +68,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="grid grid-cols-3 gap-4 border-t border-slate-800/80 pt-6 text-xs font-mono">
             <div>
               <span className="text-slate-500 block uppercase text-[10px]">Verified Myths</span>
-              <span className="text-lg font-bold text-white tabular-nums">16 Dossiers</span>
+              <span className="text-lg font-bold text-white tabular-nums">54 Dossiers</span>
             </div>
             <div>
               <span className="text-slate-500 block uppercase text-[10px]">Clinical Rigor</span>

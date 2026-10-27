@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { QUIZ_QUESTIONS } from '../data/quizData';
 import { QuizQuestion } from '../types/myth';
-import { CheckCircle2, XCircle, RotateCcw, Award, ChevronRight, BookOpen, Flame } from 'lucide-react';
+import { CheckCircle2, XCircle, RotateCcw, Award, ChevronRight, BookOpen, Flame, Sliders } from 'lucide-react';
 
 export const TruthQuiz: React.FC = () => {
-  const [questions] = useState<QuizQuestion[]>(() => {
-    // Shuffle and pick 8 questions
-    return [...QUIZ_QUESTIONS].sort(() => 0.5 - Math.random()).slice(0, 8);
+  const [quizLength, setQuizLength] = useState<number>(10);
+  const [questions, setQuestions] = useState<QuizQuestion[]>(() => {
+    return [...QUIZ_QUESTIONS].sort(() => 0.5 - Math.random()).slice(0, 10);
   });
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -20,7 +20,20 @@ export const TruthQuiz: React.FC = () => {
     { question: QuizQuestion; userAnswer: boolean; isCorrect: boolean }[]
   >([]);
 
-  const currentQ = questions[currentIndex];
+  const currentQ = questions[currentIndex] || questions[0];
+
+  const resetQuizWithLength = (len: number) => {
+    setQuizLength(len);
+    setQuestions([...QUIZ_QUESTIONS].sort(() => 0.5 - Math.random()).slice(0, len));
+    setCurrentIndex(0);
+    setSelectedAnswer(null);
+    setHasAnswered(false);
+    setScore(0);
+    setStreak(0);
+    setMaxStreak(0);
+    setIsFinished(false);
+    setAnswersHistory([]);
+  };
 
   const handleSelect = (userChoice: boolean) => {
     if (hasAnswered) return;
@@ -54,22 +67,11 @@ export const TruthQuiz: React.FC = () => {
     }
   };
 
-  const handleRestart = () => {
-    setCurrentIndex(0);
-    setSelectedAnswer(null);
-    setHasAnswered(false);
-    setScore(0);
-    setStreak(0);
-    setMaxStreak(0);
-    setIsFinished(false);
-    setAnswersHistory([]);
-  };
-
   if (isFinished) {
     const percentage = Math.round((score / questions.length) * 100);
 
     return (
-      <div className="max-w-2xl mx-auto rounded-xl border border-slate-800 bg-[#0E131F] p-6 md:p-8 space-y-6 shadow-2xl text-center">
+      <div className="max-w-2xl mx-auto rounded-xl border border-slate-800 bg-[#0E131F] p-6 md:p-8 space-y-6 shadow-2xl text-center animate-in fade-in duration-200">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-500/15 border border-teal-500/30 text-teal-400">
           <Award className="h-8 w-8" />
         </div>
@@ -83,10 +85,10 @@ export const TruthQuiz: React.FC = () => {
               ? 'Distinguished Medical Skeptic'
               : percentage >= 50
               ? 'Informed Health Explorer'
-              : 'Susceptible to Folklore'}
+              : 'Susceptible to Wellness Folklore'}
           </h2>
           <p className="text-slate-400 text-sm">
-            You accurately debunked or verified{' '}
+            You accurately adjudicated{' '}
             <span className="font-mono font-bold text-teal-400">{score}</span> out of{' '}
             <span className="font-mono font-bold text-white">{questions.length}</span> viral health claims.
           </p>
@@ -137,21 +139,23 @@ export const TruthQuiz: React.FC = () => {
           </div>
         </div>
 
-        <button
-          onClick={handleRestart}
-          className="inline-flex items-center gap-2 rounded-lg bg-teal-500 px-6 py-2.5 text-xs font-semibold text-slate-950 hover:bg-teal-400 transition-colors shadow-sm"
-        >
-          <RotateCcw className="h-4 w-4" />
-          <span>Retake Quiz With New Claims</span>
-        </button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <button
+            onClick={() => resetQuizWithLength(quizLength)}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-teal-500 px-6 py-2.5 text-xs font-semibold text-slate-950 hover:bg-teal-400 transition-colors shadow-sm"
+          >
+            <RotateCcw className="h-4 w-4" />
+            <span>Retake With New Claims</span>
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Top status bar */}
-      <div className="rounded-xl border border-slate-800 bg-[#0E131F] p-4 flex items-center justify-between text-xs font-mono">
+      {/* Top status bar & Quiz Length selector */}
+      <div className="rounded-xl border border-slate-800 bg-[#0E131F] p-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
         <div className="flex items-center gap-2 text-slate-300">
           <span>Question</span>
           <span className="font-bold text-teal-400 tabular-nums">
@@ -169,6 +173,23 @@ export const TruthQuiz: React.FC = () => {
 
           <div className="text-slate-400">
             Score: <span className="text-white font-bold tabular-nums">{score}</span>
+          </div>
+
+          <div className="flex items-center gap-1 border-l border-slate-800 pl-3">
+            {[5, 10, 20].map((len) => (
+              <button
+                key={len}
+                onClick={() => resetQuizWithLength(len)}
+                className={`px-2 py-0.5 rounded text-[10px] transition-colors ${
+                  quizLength === len
+                    ? 'bg-teal-500 text-slate-950 font-bold'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title={`Play ${len} questions`}
+              >
+                {len}Q
+              </button>
+            ))}
           </div>
         </div>
       </div>

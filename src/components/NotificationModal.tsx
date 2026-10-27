@@ -30,14 +30,16 @@ export const NotificationModal: React.FC<NotificationModalProps> = ({
     setRequesting(true);
     setDispatchStatus(null);
     try {
-      const perm = await requestNotificationPermission();
-      onPermissionChange(perm);
+      const result = await requestNotificationPermission();
+      onPermissionChange(result.permission);
       setPrefs(getStoredNotificationPreferences());
 
-      if (perm === 'granted') {
-        setDispatchStatus('Permission granted! You will now receive evidence-based daily briefings.');
-      } else if (perm === 'denied') {
-        setDispatchStatus('Permission was denied. You can reset notification permissions in your browser URL settings.');
+      if (result.permission === 'granted') {
+        setDispatchStatus(
+          result.isIframeFallback
+            ? 'Daily Health Briefings Enabled! You will receive scheduled clinical alerts in your active feed.'
+            : 'Permission granted! Native system notifications are now active.'
+        );
       }
     } finally {
       setRequesting(false);
