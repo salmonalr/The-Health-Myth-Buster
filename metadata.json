@@ -1,0 +1,6 @@
+{
+  "name": "Veritas Health Myth Buster",
+  "description": "Evidence-based health myth debunker and AI claim verification platform with interactive truth quizzes and daily science alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
